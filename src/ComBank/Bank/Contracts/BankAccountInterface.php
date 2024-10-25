@@ -16,8 +16,8 @@ use ComBank\Transactions\Contracts\BankTransactionInterface;
 
 interface BankAccountInterface
 {
-    const STATUS_OPEN = 'OPEN';
-    const STATUS_CLOSED = 'CLOSED';
+    const STATUS_OPEN = true;
+    const STATUS_CLOSED = false;
 
     public function isOpen();
 
