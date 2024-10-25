@@ -22,9 +22,9 @@ use ComBank\Transactions\Contracts\BankTransactionInterface;
 
 class BankAccount implements BankAccountInterface
 {
-    private  $balance;
-    private  $status;
-    private  $overdraft;
+    private $balance;
+    private $status;
+    private $overdraft;
     use AmountValidationTrait;
 
     /*     public function __constructt($balance, $status, $overdraft)
@@ -80,7 +80,7 @@ class BankAccount implements BankAccountInterface
     public function transaction(BankTransactionInterface $bank)
     {
 
-        if ($this->status ==  BankAccountInterface::STATUS_CLOSED) {
+        if ($this->status == BankAccountInterface::STATUS_CLOSED) {
             throw new BankAccountException(("La cuenta esta cerrada!"));
         } else {
             $saldoSettear = $bank->applyTransaction($this);
@@ -92,17 +92,23 @@ class BankAccount implements BankAccountInterface
 
     public function isOpen()
     {
-        return $this->status;
+        if ($this->status == BankAccountInterface::STATUS_CLOSED) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     public function closeAccount()
     {
-        /*         if(!$this->openAccount()){
-             throw new BankAccountException("La cuenta ya esta cerrada!");
-        } */
+        if ($this->getStatus() == BankAccountInterface::STATUS_CLOSED) {
+            throw new BankAccountException("La cuenta ya esta cerrada!");
+        } else {
+            return $this->status = BankAccountInterface::STATUS_CLOSED;
+        }
 
 
-        return  $this->status = BankAccountInterface::STATUS_CLOSED;
     }
 
     public function reOpenAccount()
