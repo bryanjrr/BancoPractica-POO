@@ -19,6 +19,11 @@ trait AmountValidationTrait
      */
     public function validateAmount(float $amount):void
     {
+        if($amount > 0){
+            $this-> amount = $amount;
+        }else{
+            throw new ZeroAmountException("el ingreso debe de ser mayor a 0");
+        }
         
 
     }

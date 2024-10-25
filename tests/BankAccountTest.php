@@ -47,17 +47,11 @@ class BankAccountTest extends TestCase
     {
         $account = new BankAccount(100.0);
         $account->closeAccount();
-<<<<<<< HEAD
-        $this->assertFalse($account->reOpenAccount());
 
-        $account->reopenAccount();
-        $this->assertTrue($account->reOpenAccount());
-=======
         $this->assertFalse($account->isOpen());
 
         $account->reopenAccount();
         $this->assertTrue($account->isOpen());
->>>>>>> 62145aab56807b1ee71e896986e7bcc1c019aeef
     }
 
     // Test overdraft application with a mock OverdraftInterface
@@ -74,7 +68,7 @@ class BankAccountTest extends TestCase
     public function testFailedTransactionWithOverdraft(): void
     {
         $this->expectException(FailedTransactionException::class);        
-
+        
         $bankAccount = new BankAccount(100.0);
         $bankAccount->applyOverdraft(new SilverOverdraft());        
         $bankAccount->transaction(new WithdrawTransaction(201.0));// should fail

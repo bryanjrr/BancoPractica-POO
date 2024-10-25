@@ -1,4 +1,6 @@
-<?php namespace ComBank\Transactions;
+<?php
+
+namespace ComBank\Transactions;
 
 /**
  * Created by VS Code.
@@ -8,27 +10,35 @@
  */
 
 use ComBank\Bank\Contracts\BankAccountInterface;
+use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
+use ComBank\Exceptions\ZeroAmountException;
 
 /* Con implements sobrescribo si la funcion es la misma */
 /* Con el extends pillo amount de baseTransaction */
-class DepositTransaction extends BaseTransaction implements BankTransactionInterface
-{   
 
-    public function __construct(float $newamount = 0.0){
+class DepositTransaction extends BaseTransaction implements BankTransactionInterface
+{
+    use AmountValidationTrait;
+
+    public function __construct(float $newamount = 0.0)
+    {
+        parent::validateAmount($newamount);
         $this->amount = $newamount;
     }
 
-    public function getAmount():float{
+    public function getAmount(): float
+    {
         return $this->amount;
     }
 
-    public function getTransactionInfo():string{
+    public function getTransactionInfo(): string
+    {
         return "DEPOSIT_TRANSACTION";
     }
 
-    public function applyTransaction(BankAccountInterface $bankAccountt):float{
+    public function applyTransaction(BankAccountInterface $bankAccountt): float
+    {
         return $bankAccountt->getBalance() + $this->getAmount();
     }
-   
 }

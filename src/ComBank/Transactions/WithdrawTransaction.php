@@ -10,14 +10,17 @@ namespace ComBank\Transactions;
  */
 
 use ComBank\Bank\Contracts\BankAccountInterface;
+use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
 
 class WithdrawTransaction extends BaseTransaction implements BankTransactionInterface
 {
 
+
     public function __construct(float $newamount = 0.0)
     {
+        parent::validateAmount($newamount);
         $this->amount = $newamount;
     }
 
@@ -28,16 +31,21 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
 
     public function getTransactionInfo(): string
     {
-        return "DEPOSIT_TRANSACTION";
+        return "WITHDRAW_TRANSACTION";
     }
 
     public function applyTransaction(BankAccountInterface $bankAccountt): float
     {
 
+
         $calculoSaldo = $bankAccountt->getBalance() - $this->getAmount();
-        
+
         if (!$bankAccountt->getOverdraft()->isGrantOverdraftFunds($calculoSaldo)) {
-            throw new InvalidOverdraftFundsException("No esta permitido hacer esta operacion");
+            if ($bankAccountt->getOverdraft()->getOverdraftFundsAmount() == 0) {
+                throw new InvalidOverdraftFundsException("balance insuficiente para hacer el retiro ");
+            }
+        
+            throw new FailedTransactionException("No esta permitido hacer esta operacion");
         }
         return $bankAccountt->getBalance() - $this->getAmount();
     }

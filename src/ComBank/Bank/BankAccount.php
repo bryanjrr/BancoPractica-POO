@@ -25,8 +25,9 @@ class BankAccount implements BankAccountInterface
     private  $balance;
     private  $status;
     private  $overdraft;
+    use AmountValidationTrait;
 
-/*     public function __constructt($balance, $status, $overdraft)
+    /*     public function __constructt($balance, $status, $overdraft)
     {
         $this->balance = $balance;
         $this->status = $status;
@@ -35,6 +36,7 @@ class BankAccount implements BankAccountInterface
 
     public function __construct(float $newbalance = 0.0)
     {
+        $this->validateAmount($newbalance);
         $this->balance = $newbalance;
         $this->status = BankAccountInterface::STATUS_OPEN;
         $this->overdraft = new NoOverdraft();
@@ -49,10 +51,11 @@ class BankAccount implements BankAccountInterface
         return $this->status;
     }
 
-    public function applyOverdraft(OverdraftInterface $o){
-        $this -> overdraft = $o;
+    public function applyOverdraft(OverdraftInterface $o)
+    {
+        $this->overdraft = $o;
     }
-    
+
 
     /* Setters */
 
@@ -69,35 +72,47 @@ class BankAccount implements BankAccountInterface
 
 
     /* Funciones */
-    public function getOverdraft(){
-        return $this -> overdraft;
+    public function getOverdraft()
+    {
+        return $this->overdraft;
     }
 
-    public function transaction(BankTransactionInterface $bank){
-    
-     $saldoSettear = $bank -> applyTransaction($this);
+    public function transaction(BankTransactionInterface $bank)
+    {
 
-     $this->setBalance($saldoSettear);
-       
+        if ($this->status ==  BankAccountInterface::STATUS_CLOSED) {
+            throw new BankAccountException(("La cuenta esta cerrada!"));
+        } else {
+            $saldoSettear = $bank->applyTransaction($this);
+
+
+            $this->setBalance($saldoSettear);
+        }
     }
 
-    public function isOpen(){
+    public function isOpen()
+    {
         return $this->status;
     }
 
     public function closeAccount()
-    {   
-/*         if(!$this->openAccount()){
+    {
+        /*         if(!$this->openAccount()){
              throw new BankAccountException("La cuenta ya esta cerrada!");
         } */
 
-   
-      return  $this->status = BankAccountInterface::STATUS_CLOSED;
+
+        return  $this->status = BankAccountInterface::STATUS_CLOSED;
     }
 
     public function reOpenAccount()
-    {  
-       return $this->status = BankAccountInterface::STATUS_OPEN;
+    {
+
+        if ($this->status == BankAccountInterface::STATUS_CLOSED) {
+            return $this->status = BankAccountInterface::STATUS_OPEN;
+        } else {
+            throw new BankAccountException("La cuenta ya estaba abierta");
+        }
     }
 
 
@@ -105,9 +120,4 @@ class BankAccount implements BankAccountInterface
     {
         return $this->balance;
     }
-
-
-
-
-
 }
