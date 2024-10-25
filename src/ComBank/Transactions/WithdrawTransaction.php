@@ -45,7 +45,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
                 throw new InvalidOverdraftFundsException("balance insuficiente para hacer el retiro ");
             }
         
-            throw new FailedTransactionException("No esta permitido hacer esta operacion");
+            throw new FailedTransactionException("balance insuficiente para hacer el retiro");
         }
         return $bankAccountt->getBalance() - $this->getAmount();
     }
