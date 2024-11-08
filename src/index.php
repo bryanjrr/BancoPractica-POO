@@ -8,6 +8,7 @@
  */
 
 use ComBank\Bank\BankAccount;
+use ComBank\Bank\InternationalBankAccount;
 use ComBank\OverdraftStrategy\SilverOverdraft;
 use ComBank\Transactions\DepositTransaction;
 use ComBank\Transactions\WithdrawTransaction;
@@ -60,9 +61,6 @@ try {
     pl('Doing transaction withdrawal (-600) with current balance ' . $bankAccount1->getBalance());
 
     $bankAccount1->transaction(new WithdrawTransaction(600));
-
-
-
 } catch (ZeroAmountException $e) {
     pl($e->getMessage());
 } catch (BankAccountException $e) {
@@ -120,7 +118,6 @@ try {
     pl('Doing transaction withdrawal (-120) with current balance ' . $bankAccount2->getBalance());
 
     $bankAccount2->transaction(new WithdrawTransaction(120));
-
 } catch (FailedTransactionException $e) {
     pl('Error transaction: ' . $e->getMessage());
 } catch (InvalidOverdraftFundsException $e) {
@@ -132,7 +129,6 @@ try {
     pl('Doing transaction withdrawal (-20) with current balance : ' . $bankAccount2->getBalance());
 
     $bankAccount2->transaction(new WithdrawTransaction(20));
-
 } catch (FailedTransactionException $e) {
     pl('Error transaction: ' . $e->getMessage());
 } catch (InvalidOverdraftFundsException $e) {
@@ -157,3 +153,17 @@ try {
     pl($e->getMessage());
 }
 
+/* Bank Account 3 [Internacional] */
+/* /---[Bank account 1]---/ */
+// create a new account1 with balance 400
+pl('--------- [Start testing bank account #4, No overdraft] --------');
+
+
+$bankAccount4 = new InternationalBankAccount(300);
+
+// show balance account
+pl($bankAccount4->getBalance() . $bankAccount4->getCurrency());
+
+pl("Converting balance to Dollars (Rate: 1USD = 1.10€)");
+
+pl("Converted Balance: " . $bankAccount4->getConvertedBalance() + "(USD)");

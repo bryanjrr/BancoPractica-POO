@@ -24,7 +24,6 @@ trait AmountValidationTrait
         }else{
             throw new ZeroAmountException("el ingreso debe de ser mayor a 0");
         }
-        
 
     }
 }

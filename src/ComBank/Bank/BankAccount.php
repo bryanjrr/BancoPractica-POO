@@ -17,15 +17,21 @@ use ComBank\Bank\Contracts\BankAccountInterface;
 use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
+use ComBank\apiTrait\apiTrait;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
 
 class BankAccount implements BankAccountInterface
 {
-    private $balance;
-    private $status;
-    private $overdraft;
-    use AmountValidationTrait;
+    protected $balance;
+    protected $status;
+    protected $overdraft;
+    protected $person_holder;
+    protected $currency;
+
+    use AmountValidationTrait, apiTrait;
+
+    
 
     /*     public function __constructt($balance, $status, $overdraft)
     {
@@ -34,12 +40,13 @@ class BankAccount implements BankAccountInterface
         $this->overdraft = $overdraft;
     } */
 
-    public function __construct(float $newbalance = 0.0)
+    public function __construct(float $newbalance = 0.0, string $newcurrency = "€ (EUR)")
     {
         $this->validateAmount($newbalance);
         $this->balance = $newbalance;
         $this->status = BankAccountInterface::STATUS_OPEN;
         $this->overdraft = new NoOverdraft();
+        $this->currency = $newcurrency;
     }
 
 
@@ -49,6 +56,11 @@ class BankAccount implements BankAccountInterface
     public function getStatus()
     {
         return $this->status;
+    }
+
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 
     public function applyOverdraft(OverdraftInterface $o)
