@@ -20,6 +20,8 @@ use ComBank\OverdraftStrategy\Contracts\OverdraftInterface;
 use ComBank\apiTrait\apiTrait;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
+use ComBank\Person\Person;
+
 
 class BankAccount implements BankAccountInterface
 {
@@ -31,7 +33,7 @@ class BankAccount implements BankAccountInterface
 
     use AmountValidationTrait, apiTrait;
 
-    
+
 
     /*     public function __constructt($balance, $status, $overdraft)
     {
@@ -47,11 +49,15 @@ class BankAccount implements BankAccountInterface
         $this->status = BankAccountInterface::STATUS_OPEN;
         $this->overdraft = new NoOverdraft();
         $this->currency = $newcurrency;
+        $this->person_holder = new Person("john", 354134214, "bryanjoyarubio@gmail.com");
     }
 
 
     /* GETTERS */
 
+    public function getPerson(){
+        return $this->person_holder;
+    }
 
     public function getStatus()
     {
@@ -109,7 +115,6 @@ class BankAccount implements BankAccountInterface
         } else {
             return true;
         }
-
     }
 
     public function closeAccount()
@@ -119,8 +124,6 @@ class BankAccount implements BankAccountInterface
         } else {
             return $this->status = BankAccountInterface::STATUS_CLOSED;
         }
-
-
     }
 
     public function reOpenAccount()

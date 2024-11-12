@@ -9,6 +9,7 @@
 
 use ComBank\Bank\BankAccount;
 use ComBank\Bank\InternationalBankAccount;
+use ComBank\Bank\NationalBankAccount;
 use ComBank\OverdraftStrategy\SilverOverdraft;
 use ComBank\Transactions\DepositTransaction;
 use ComBank\Transactions\WithdrawTransaction;
@@ -26,8 +27,6 @@ pl('--------- [Start testing bank account #1, No overdraft] --------');
 try {
 
     $bankAccount1 = new BankAccount(400);
-
-
 
     // show balance account
     pl($bankAccount1->getBalance());
@@ -153,11 +152,21 @@ try {
     pl($e->getMessage());
 }
 
-/* Bank Account 3 [Internacional] */
-/* /---[Bank account 1]---/ */
-// create a new account1 with balance 400
-pl('--------- [Start testing bank account #4, No overdraft] --------');
+pl('--------- [Start testing National Bank Account] --------');
 
+$bankAccount3 = new NationalBankAccount(500);
+
+pl($bankAccount3->getBalance() . $bankAccount3->getCurrency());
+
+pl("validating email: " . $bankAccount3->getPerson()->getEmail());
+
+
+pl("The email is: " . $bankAccount3->validateEmail($bankAccount3->getPerson()->getEmail()));
+
+
+
+
+pl('--------- [Start testing International Bank Account] --------');
 
 $bankAccount4 = new InternationalBankAccount(300);
 
@@ -166,4 +175,4 @@ pl($bankAccount4->getBalance() . $bankAccount4->getCurrency());
 
 pl("Converting balance to Dollars (Rate: 1USD = 1.10€)");
 
-pl("Converted Balance: " . $bankAccount4->getConvertedBalance() + "(USD)");
+pl("Converted Balance: " . $bankAccount4->getConvertedBalance() . "(USD)");
