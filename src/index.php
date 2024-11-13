@@ -17,6 +17,7 @@ use ComBank\Exceptions\BankAccountException;
 use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Exceptions\InvalidOverdraftFundsException;
 use ComBank\Exceptions\ZeroAmountException;
+use ComBank\Person\Person;
 
 require_once 'bootstrap.php';
 
@@ -26,7 +27,8 @@ require_once 'bootstrap.php';
 pl('--------- [Start testing bank account #1, No overdraft] --------');
 try {
 
-    $bankAccount1 = new BankAccount(400);
+    $nuevaPersona1 = new Person("Bryan", 123214213, "bryanjoyarubio@gmail.com");
+    $bankAccount1 = new BankAccount(400, "€ (EUR)", $nuevaPersona1);
 
     // show balance account
     pl($bankAccount1->getBalance());
@@ -83,7 +85,7 @@ pl('--------- [Start testing bank account #2, Silver overdraft (100.0 funds)] --
 try {
 
     // show balance account
-    $bankAccount2 = new BankAccount(200);
+    $bankAccount2 = new BankAccount(200, "€ (EUR)", $nuevaPersona1);
 
     $bankAccount2->applyOverdraft(new SilverOverdraft());
 
@@ -153,26 +155,26 @@ try {
 }
 
 pl('--------- [Start testing National Bank Account] --------');
+try {
+    $nuevaPersona3 = new Person("John", 021421421, "John.doe@gmail.com");
+    $bankAccount3 = new NationalBankAccount(500, "€ (Euro)", $nuevaPersona3);
 
-$bankAccount3 = new NationalBankAccount(500);
+    pl($bankAccount3->getBalance() . $bankAccount3->getCurrency());
 
-pl($bankAccount3->getBalance() . $bankAccount3->getCurrency());
-
-pl("validating email: " . $bankAccount3->getPerson()->getEmail());
-
-
-pl("The email is: " . $bankAccount3->validateEmail($bankAccount3->getPerson()->getEmail()));
-
-
-
-
+} catch (\Exception $e) {
+    pl($e->getMessage());
+}
 pl('--------- [Start testing International Bank Account] --------');
+try {
+    $nuevaPersona4 = new Person("John", 124213421, "John.doe@invalid-email");
+    $bankAccount4 = new InternationalBankAccount(300, "€ (Euro)", $nuevaPersona4);
 
-$bankAccount4 = new InternationalBankAccount(300);
+    pl($bankAccount4->getBalance() . $bankAccount4->getCurrency());
 
-// show balance account
-pl($bankAccount4->getBalance() . $bankAccount4->getCurrency());
+    pl("Converting balance to Dollars (Rate: 1USD = 1.10€)");
 
-pl("Converting balance to Dollars (Rate: 1USD = 1.10€)");
+    pl("Converted Balance: " . $bankAccount4->getConvertedBalance() . "(USD)");
 
-pl("Converted Balance: " . $bankAccount4->getConvertedBalance() . "(USD)");
+} catch (\Exception $e) {
+    pl($e->getMessage());
+}

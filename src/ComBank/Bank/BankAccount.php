@@ -42,14 +42,14 @@ class BankAccount implements BankAccountInterface
         $this->overdraft = $overdraft;
     } */
 
-    public function __construct(float $newbalance = 0.0, string $newcurrency = "€ (EUR)")
+    public function __construct(float $newbalance = 0.0, string $newcurrency = "€ (EUR)", Person $nPersonHolder = null)
     {
         $this->validateAmount($newbalance);
         $this->balance = $newbalance;
         $this->status = BankAccountInterface::STATUS_OPEN;
         $this->overdraft = new NoOverdraft();
         $this->currency = $newcurrency;
-        $this->person_holder = new Person("john", 354134214, "bryanjoyarubio@gmail.com");
+        $this->person_holder = $nPersonHolder;
     }
 
 
@@ -99,10 +99,9 @@ class BankAccount implements BankAccountInterface
     {
 
         if ($this->status == BankAccountInterface::STATUS_CLOSED) {
-            throw new BankAccountException(("La cuenta esta cerrada!"));
+            throw new BankAccountException(message: ("La cuenta esta cerrada!"));
         } else {
             $saldoSettear = $bank->applyTransaction($this);
-
 
             $this->setBalance($saldoSettear);
         }
