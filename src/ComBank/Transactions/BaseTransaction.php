@@ -11,11 +11,12 @@ use ComBank\Exceptions\InvalidArgsException;
 use ComBank\Exceptions\ZeroAmountException;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Exceptions\FailedTransactionException;
+use ComBank\apiTrait\apiTrait;
 
 
 abstract class BaseTransaction
 {
     protected float $amount;
-    use AmountValidationTrait;
+    use AmountValidationTrait, apiTrait;
 }
 

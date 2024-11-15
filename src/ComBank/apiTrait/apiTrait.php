@@ -2,6 +2,10 @@
 
 namespace ComBank\apiTrait;
 
+use ComBank\Transactions\Contracts\BankTransactionInterface;
+use ComBank\Transactions\DepositTransaction;
+use ComBank\Transactions\WithdrawTransaction;
+
 /* use ComBank\Bank\BankAccount;
  */
 
@@ -61,5 +65,35 @@ trait apiTrait
         }
 
         return $validado;
+    }
+
+    public function detectFraud(BankTransactionInterface $b): bool
+    {
+        $tipoTransaccion = $b->getTransactionInfo();
+        /* 6000 */
+        $amount = $b->getAmount();
+
+        $ch = curl_init();
+
+        $api = "https://673608e25995834c8a9521a8.mockapi.io/fraudev1/fraude";
+
+        curl_setopt($ch, CURLOPT_URL, $api);
+        curl_setopt_array($ch, array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => true
+
+        ));
+
+        $resultado = curl_exec($ch);
+
+        curl_close($ch);
+        $data = json_decode($resultado, true);
+
+        for ($i = 0; $i < 8; $i++) {
+            $object = $data[$i];
+            if ($amount < $object["Amount"] && $tipoTransaccion == $object["TipoDeMovimiento"]) {
+                return $object["Permitido"];
+            }
+        }
     }
 }
