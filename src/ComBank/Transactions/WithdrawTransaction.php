@@ -37,9 +37,8 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
     public function applyTransaction(BankAccountInterface $bankAccountt): float
     {
 
-        if($this->detectFraud($this)){
+        if(!$this->detectFraud($this)){
             $calculoSaldo = $bankAccountt->getBalance() - $this->getAmount();
-
             if (!$bankAccountt->getOverdraft()->isGrantOverdraftFunds($calculoSaldo)) {
                 if ($bankAccountt->getOverdraft()->getOverdraftFundsAmount() == 0) {
                     throw new InvalidOverdraftFundsException("balance insuficiente para hacer el retiro ");
@@ -51,7 +50,5 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
         }else{
             throw new FailedTransactionException("Se ha detectado como fraude");
         }
-
-
     }
 }
