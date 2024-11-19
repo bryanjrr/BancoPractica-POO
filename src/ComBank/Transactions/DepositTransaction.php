@@ -9,9 +9,11 @@ namespace ComBank\Transactions;
  * Time: 11:30 AM
  */
 
+use ComBank\apiTrait\apiTrait;
 use ComBank\Bank\Contracts\BankAccountInterface;
 use ComBank\Support\Traits\AmountValidationTrait;
 use ComBank\Transactions\Contracts\BankTransactionInterface;
+use ComBank\Exceptions\FailedTransactionException;
 use ComBank\Exceptions\ZeroAmountException;
 
 /* Con implements sobrescribo si la funcion es la misma */
@@ -39,6 +41,10 @@ class DepositTransaction extends BaseTransaction implements BankTransactionInter
 
     public function applyTransaction(BankAccountInterface $bankAccountt): float
     {
-        return $bankAccountt->getBalance() + $this->getAmount();
+        if (!($this->detectFraud($this))) {
+            return $bankAccountt->getBalance() + $this->getAmount();
+        } else {
+            throw new FailedTransactionException("Se ha detectado como fraude");
+        }
     }
 }

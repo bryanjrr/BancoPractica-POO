@@ -70,8 +70,7 @@ trait apiTrait
     public function detectFraud(BankTransactionInterface $b): bool
     {
         $tipoTransaccion = $b->getTransactionInfo();
-        /* 6000 */
-        $amount = $b->getAmount();
+        $amountUsuario = $b->getAmount();
 
         $ch = curl_init();
 
@@ -90,10 +89,15 @@ trait apiTrait
         $data = json_decode($resultado, true);
 
         for ($i = 0; $i < 8; $i++) {
-            $object = $data[$i];
-            if ($amount < $object["Amount"] && $tipoTransaccion == $object["TipoDeMovimiento"]) {
-                return $object["Permitido"];
+            if ($data[$i]["TipoDeMovimiento"] == $tipoTransaccion) {
+                if ($data[$i]["amount"] <= $amountUsuario && $data[$i]["permitido"] == true) {
+                    $fraude = false;
+                } elseif ($data[$i]["amount"] <= $amountUsuario && $data[$i]["permitido"] == false) {
+                    $fraude = true;
+                }
             }
         }
+
+        return $fraude;
     }
 }

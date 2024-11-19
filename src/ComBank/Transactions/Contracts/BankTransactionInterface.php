@@ -17,7 +17,6 @@ use ComBank\Bank\Contracts\BankAccount;
 interface BankTransactionInterface
 {
 
-
     public function applyTransaction(BankAccountInterface $account);
 
     public function getTransactionInfo(): string;
