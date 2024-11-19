@@ -48,7 +48,7 @@ class WithdrawTransaction extends BaseTransaction implements BankTransactionInte
             }
             return $bankAccountt->getBalance() - $this->getAmount();
         }else{
-            throw new FailedTransactionException("Se ha detectado como fraude");
+            throw new FailedTransactionException("Fraud DETECTED!");
         }
     }
 }

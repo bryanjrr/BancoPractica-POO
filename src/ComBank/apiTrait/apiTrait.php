@@ -71,6 +71,7 @@ trait apiTrait
     {
         $tipoTransaccion = $b->getTransactionInfo();
         $amountUsuario = $b->getAmount();
+        $fraude = false;
 
         $ch = curl_init();
 
@@ -90,9 +91,9 @@ trait apiTrait
 
         for ($i = 0; $i < 8; $i++) {
             if ($data[$i]["TipoDeMovimiento"] == $tipoTransaccion) {
-                if ($data[$i]["amount"] <= $amountUsuario && $data[$i]["permitido"] == true) {
+                if ($data[$i]["Amount"] <= $amountUsuario && $data[$i]["Permitido"] == true) {
                     $fraude = false;
-                } elseif ($data[$i]["amount"] <= $amountUsuario && $data[$i]["permitido"] == false) {
+                } elseif ($data[$i]["Amount"] <= $amountUsuario && $data[$i]["Permitido"] == false) {
                     $fraude = true;
                 }
             }

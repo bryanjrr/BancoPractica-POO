@@ -160,21 +160,57 @@ try {
     $bankAccount3 = new NationalBankAccount(500, "€ (Euro)", $nuevaPersona3);
 
     pl($bankAccount3->getBalance() . $bankAccount3->getCurrency());
-
 } catch (\Exception $e) {
     pl($e->getMessage());
 }
 pl('--------- [Start testing International Bank Account] --------');
 try {
     $nuevaPersona4 = new Person("John", 124213421, "John.doe@invalid-email");
-    $bankAccount4 = new InternationalBankAccount(300, "€ (Euro)", $nuevaPersona4);
+} catch (\Exception $e) {
+    pl($e->getMessage());
+}
 
-    pl($bankAccount4->getBalance() . $bankAccount4->getCurrency());
+$bankAccount4 = new InternationalBankAccount(300, "€ (Euro)");
+
+try {
+    pl("Balance without converting: " . $bankAccount4->getBalance() . $bankAccount4->getCurrency());
 
     pl("Converting balance to Dollars (Rate: 1USD = 1.10€)");
 
     pl("Converted Balance: " . $bankAccount4->getConvertedBalance() . "(USD)");
 
+    pl("Making a deposit of (+7000)");
+
+    $bankAccount4->transaction(new DepositTransaction(7000));
+
+    pl("Balance after deposit: " . $bankAccount4->getBalance() . $bankAccount4->getCurrency());
+
+
+    Pl("Making a deposit of (+25000)");
+
+    $bankAccount4->transaction(new DepositTransaction(25000));
 } catch (\Exception $e) {
+    pl($e->getMessage());
+} catch (FailedTransactionException $e) {
+    pl('Error transaction: ' . $e->getMessage());
+}
+
+
+try {
+    pl("Making a withdraw of (-3500)");
+
+    $bankAccount4->transaction(new WithdrawTransaction(3500));
+
+    pl("Balance after withdraw: " . $bankAccount4->getBalance() . $bankAccount4->getCurrency());
+
+
+    Pl("Making a withdraw of (-15000)");
+
+    $bankAccount4->transaction(new WithdrawTransaction(15000));
+} catch (\Exception $e) {
+    pl($e->getMessage());
+} catch (FailedTransactionException $e) {
+    pl('Error transaction: ' . $e->getMessage());
+} catch (InvalidOverdraftFundsException $e) {
     pl($e->getMessage());
 }
