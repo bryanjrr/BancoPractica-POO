@@ -27,7 +27,9 @@ require_once 'bootstrap.php';
 pl('--------- [Start testing bank account #1, No overdraft] --------');
 try {
 
-    $nuevaPersona1 = new Person("Bryan", 123214213, "bryanjoyarubio@gmail.com");
+    $nuevaPersona1 = new Person("Bryan", 123214213, "bryanjoyarubio@gmail.com", 2003);
+    echo "Pesona Creada -- " . " Nombre: " . $nuevaPersona1->getNombre() . " Email: " . $nuevaPersona1->getEmail() . " Año de nacimiento: " . $nuevaPersona1->getAño();
+
     $bankAccount1 = new BankAccount(400, "€ (EUR)", $nuevaPersona1);
 
     // show balance account
@@ -62,6 +64,10 @@ try {
     pl('Doing transaction withdrawal (-600) with current balance ' . $bankAccount1->getBalance());
 
     $bankAccount1->transaction(new WithdrawTransaction(600));
+
+    pl('My balance after failed last transaction : ' . $bankAccount1->getBalance());
+
+    $bankAccount1->closeAccount();
 } catch (ZeroAmountException $e) {
     pl($e->getMessage());
 } catch (BankAccountException $e) {
@@ -70,22 +76,22 @@ try {
     pl('Error transaction: ' . $e->getMessage());
 } catch (InvalidOverdraftFundsException $e) {
     pl($e->getMessage());
+} catch (\Exception $e) {
+    pl($e->getMessage());
 }
-pl('My balance after failed last transaction : ' . $bankAccount1->getBalance());
-
-$bankAccount1->closeAccount();
-
-pl("La cuenta ahora esta cerrada");
 
 
 
 
 //---[Bank account 2]---/
 pl('--------- [Start testing bank account #2, Silver overdraft (100.0 funds)] --------');
-try {
 
+try {
     // show balance account
-    $bankAccount2 = new BankAccount(200, "€ (EUR)", $nuevaPersona1);
+    $nuevaPersona2 = new Person("Bryan", 123214213, "bryanjoyarubio@gmail.com", 2003);
+    echo "Pesona Creada -- " . " Nombre: " . $nuevaPersona2->getNombre() . " Email: " . $nuevaPersona2->getEmail() . " Año de nacimiento: " . $nuevaPersona2->getAño();
+
+    $bankAccount2 = new BankAccount(200, "€ (EUR)", $nuevaPersona2);
 
     $bankAccount2->applyOverdraft(new SilverOverdraft());
 
@@ -123,6 +129,8 @@ try {
     pl('Error transaction: ' . $e->getMessage());
 } catch (InvalidOverdraftFundsException $e) {
     pl($e->getMessage());
+} catch (\Exception $e) {
+    pl($e->getMessage());
 }
 pl('My balance after failed last transaction : ' . $bankAccount2->getBalance());
 
@@ -134,15 +142,12 @@ try {
     pl('Error transaction: ' . $e->getMessage());
 } catch (InvalidOverdraftFundsException $e) {
     pl($e->getMessage());
+} catch (\Exception $e) {
+    pl($e->getMessage());
 }
 pl('My new balance after withdrawal (-20) with funds : ' . $bankAccount2->getBalance());
 
-try {
-} catch (BankAccountException $e) {
-    pl($e->getMessage());
-} catch (InvalidOverdraftFundsException $e) {
-    pl($e->getMessage());
-}
+
 
 $bankAccount2->closeAccount();
 
@@ -155,8 +160,14 @@ try {
 }
 
 pl('--------- [Start testing National Bank Account] --------');
+
+$nuevaPersona3 = null;
+$bankAccount3 = null;
+
 try {
-    $nuevaPersona3 = new Person("John", 021421421, "John.doe@gmail.com");
+    echo "Creando Persona para la cuenta:";
+    $nuevaPersona3 = new Person("John", 021421421, "John.doe@gmail.com", 2005);
+    echo "Pesona Creada -- " . " Nombre: " . $nuevaPersona3->getNombre() . " Email: " . $nuevaPersona3->getEmail() . " Año de nacimiento: " . $nuevaPersona3->getAño();
     $bankAccount3 = new NationalBankAccount(500, "€ (Euro)", $nuevaPersona3);
 
     pl($bankAccount3->getBalance() . $bankAccount3->getCurrency());
@@ -165,7 +176,9 @@ try {
 }
 pl('--------- [Start testing International Bank Account] --------');
 try {
-    $nuevaPersona4 = new Person("John", 124213421, "John.doe@invalid-email");
+    echo "Creando Persona para la cuenta:";
+    $nuevaPersona4 = new Person("John", 124213421, "John.doe@invalid-email", 2006);
+    echo "Pesona Creada -- " . " Nombre: " . $nuevaPersona4->getNombre() . " Email: " . $nuevaPersona4->getEmail() . " Año de nacimiento: " . $nuevaPersona4->getAño();
 } catch (\Exception $e) {
     pl($e->getMessage());
 }
@@ -213,4 +226,14 @@ try {
     pl('Error transaction: ' . $e->getMessage());
 } catch (InvalidOverdraftFundsException $e) {
     pl($e->getMessage());
+}
+
+/* Probar api free edad */
+try {
+    pl("------------------ Comprobacion FREE API (comprobarEdad)  --------------------");
+    echo "Creando Persona para la cuenta:";
+    $personaX = new Person("Caracola", 12345678, "bryanJR@gmail.com", 2010);
+    $bankAccount5 = new NationalBankAccount(500, "€(Euro)", $personaX);
+} catch (Exception $e) {
+    pe("Error:" . $e->getMessage());
 }

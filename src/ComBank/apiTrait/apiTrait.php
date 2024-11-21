@@ -88,7 +88,6 @@ trait apiTrait
 
         curl_close($ch);
         $data = json_decode($resultado, true);
-
         for ($i = 0; $i < 8; $i++) {
             if ($data[$i]["TipoDeMovimiento"] == $tipoTransaccion) {
                 if ($data[$i]["Amount"] <= $amountUsuario && $data[$i]["Permitido"] == true) {
@@ -100,5 +99,38 @@ trait apiTrait
         }
 
         return $fraude;
+    }
+
+
+    public function detectarMayorEdad(int $añoNacimiento)
+    {
+        $ch = curl_init();
+
+        $api = "https://www.timeapi.io/api/Time/current/zone?timeZone=UTC";
+
+        curl_setopt($ch, CURLOPT_URL, $api);
+        curl_setopt_array($ch, array(
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => true
+
+        ));
+
+        $resultado = curl_exec($ch);
+        curl_close($ch);
+
+        $data = json_decode($resultado, true);
+/*         echo $añoNacimiento;
+        echo $data["year"]; */
+        $edad = $data["year"] - $añoNacimiento;
+
+
+
+
+        if ($edad < 18) {
+            $mayorDeEdad = false;
+        } else {
+            $mayorDeEdad = true;
+        }
+        return $mayorDeEdad;
     }
 }

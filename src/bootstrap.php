@@ -18,6 +18,12 @@ function pl($mixed)
     echo $mixed;
     echo "<br>";
 }
+function pe($mixed)
+{
+    echo "<br> <b style='color:red;'>";
+    echo $mixed;
+    echo "</b><br>";
+}
 
 function pr($mixed)
 {
